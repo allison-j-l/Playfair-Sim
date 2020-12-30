@@ -2,7 +2,7 @@ import java.util.*;
 
 /**
  * @author Allison Liu
- * @version 2.0
+ * @version 12/28/20
  */
 public class Playfair {
   private String keyword;
@@ -11,17 +11,14 @@ public class Playfair {
   String alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"; // omit J
 
   /**
-   * Constructor for an object that represents playfair cipher.
+   * Constructor for an object that represents playfair cipher. Takes in a keyword
+   * and constructs the ciphersquare that corresponds to it.
    * 
-   * @param k
+   * @param k The keyword the user wants the cipher to have.
    */
   public Playfair(String k) {
     keyword = adjustKeyword(k);
     cipherSquare = genTable(keyword);
-  }
-
-  public Playfair() {
-    keyword = "";
   }
 
   /**
@@ -73,15 +70,15 @@ public class Playfair {
    * Searches for [c] inside [table] and returns an array with it's x and y
    * positions
    * 
-   * @param c     The character that is being searched for. Requires: c is
+   * @param c     The character that is being searched for. Requires: [c] is
    *              uppercase
-   * @param table The keytable
-   * @return Array of length 2 that has the position of c in table.
+   * @param table A valid keytable.
+   * @return Array of length 2 that has the position of [c] in [table].
    */
-  private int[] searchTable(char c, char[][] table) {
+  private int[] searchTable(char c) {
     for (int i = 0; i < 5; i++) {
       for (int j = 0; j < 5; j++) {
-        if (c == table[i][j])
+        if (c == cipherSquare[i][j])
           return new int[] { i, j };
       }
     }
@@ -90,74 +87,110 @@ public class Playfair {
 
   /**
    * Adjusts input so that it can be properly encrypted by playfair cipher.
-   * Removes spaces, changes "J" to "I", adds "X" if the number of characters is
+   * Removes spaces, changes "J" to "I", adds "Z" if the number of characters is
    * odd.
    */
   private String adjustInput(String phrase) {
     phrase = phrase.toUpperCase().replaceAll("\\s", "").replace("J", "I");
-    return phrase.length() % 2 == 0 ? phrase : phrase + "X";
+    return phrase.length() % 2 == 0 ? phrase : phrase + "Z";
   }
 
   /**
+   * Encrypts a pair of two characters with this cipher table.
    * 
-   * @param chars
-   * @param pf
-   * @return
+   * @param chars The characters that are to be encrypted.
+   * @return The encrypted characters.
    */
-  private String encryptTwoChars(String chars, Playfair pf) {
+  public String encryptTwoChars(String chars) {
+    chars = chars.toUpperCase();
     if (chars.charAt(0) == chars.charAt(1) || chars.length() == 1) // duplicates
       chars = chars.charAt(0) + "X";
-    char[][] table = pf.cipherSquare;
-    int[] c1Pos = searchTable(chars.charAt(0), table);
-    int c1X = c1_pos[0], c1Y = c1_pos[1];
-    int[] c2Pos = searchTable(chars.chatAt(1), table); // mod positions by 5
+    int[] c1Pos = searchTable(chars.charAt(0));
+    int c1X = c1Pos[0], c1Y = c1Pos[1];
+    int[] c2Pos = searchTable(chars.charAt(1));
     int c2X = c2Pos[0], c2Y = c2Pos[1];
     // in the same row --> change each to one letter to right
+    char newC1, newC2;
     if (c1X == c2X) {
-      char newC1 = table[c1X][(c1Y + 1) % 5];
-      char newC2 = table[c2X][(c2Y + 1) % 5];
-      return (newC1 + newC2 + "").toUpperCase();
+      newC1 = cipherSquare[c1X][(c1Y + 1) % 5];
+      newC2 = cipherSquare[c2X][(c2Y + 1) % 5];
     }
     // in the same column --> change each to one letter below
-    if (c1_y == c2_y) {
-      char newC1 = table[(c1X + 1) % 5][c1Y];
-      char newC2 = table[(c2X + 1) % 5][c2Y];
-      return (newC1 + newC2 + "").toUpperCase();
+    else if (c1Y == c2Y) {
+      newC1 = cipherSquare[(c1X + 1) % 5][c1Y];
+      newC2 = cipherSquare[(c2X + 1) % 5][c2Y];
     }
-    // not in same row or column --> reflected (most complicated case)
-
-    return "";
+    // not in same row or column --> switch y-positions with eachother
+    else {
+      newC1 = cipherSquare[c1X][c2Y];
+      newC2 = cipherSquare[c2X][c1Y];
+    }
+    return ("" + newC1 + newC2).toUpperCase();
   }
 
   /**
-   * 
-   */
-  private String encrypt(String phrase, Playfair pf) {
-    return "";
-  }
-
-  /**
-   * Decrypts two characters [chars] with the cipher configuration [pf].
+   * Decrypts two characters [chars] with the cipher configuration
    * 
    * @param chars
-   * @param pf
+   * @return The decrypted version of the chars.
    */
-  private String decryptTwoChars(String chars, Playfair pf) {
-    return "";
+  private String decryptTwoChars(String chars) {
+    chars = chars.toUpperCase();
+    int[] c1Pos = searchTable(chars.charAt(0));
+    int c1X = c1Pos[0], c1Y = c1Pos[1];
+    int[] c2Pos = searchTable(chars.charAt(1));
+    int c2X = c2Pos[0], c2Y = c2Pos[1];
+    char newC1, newC2;
+    if (c1X == c2X) {
+      newC1 = cipherSquare[c1X][(c1Y + 4) % 5];
+      newC2 = cipherSquare[c2X][(c2Y + 4) % 5];
+    } else if (c1Y == c2Y) {
+      newC1 = cipherSquare[(c1X + 4) % 5][c1Y];
+      newC2 = cipherSquare[(c2X + 4) % 5][c2Y];
+    } else {
+      newC1 = cipherSquare[c1X][c2Y];
+      newC2 = cipherSquare[c2X][c1Y];
+    }
+    return ("" + newC1 + newC2).toUpperCase();
   }
 
-  /**
-   * Decrypts message [phrase] according to the keyword [key].
-   */
-  private String decrypt(String phrase, Playfair pf) {
-    return "";
+  private String cipher(String phrase, boolean encryptThis) {
+    phrase = adjustInput(phrase);
+    // repeatedly call encrypt
+    StringBuilder sb = new StringBuilder();
+    String str = "";
+    for (int i = 0; i < phrase.length() - 1; i += 2) {
+      if (encryptThis)
+        str = encryptTwoChars(phrase.substring(i, i + 2));
+      else
+        str = decryptTwoChars(phrase.substring(i, i + 2));
+      sb.append(str);
+
+    }
+    return sb.toString();
   }
 
   public static void main(String[] args) {
-    Playfair pf = new Playfair("bruh");
-    System.out.println(pf.removeDuplicates("allison"));
+    Scanner sc = new Scanner(System.in);
+    System.out.println("Enter a keyword ");
+    System.out.println("> ");
+    String keyword = sc.next();
+    Playfair pf = new Playfair(keyword);
+    System.out.println("Enter a message you would like to encrypt: ");
+    String message = sc.next();
+    System.out.println("Encryption: "+ pf.cipher(message, true));
+    sc.close();
+    /*System.out.println(pf.removeDuplicates("allison"));
+    System.out.println(pf.removeDuplicates("AAAAaaaa"));
     System.out.println(pf.adjustKeyword("JACK and Jill"));
     System.out.println(Arrays.deepToString(pf.cipherSquare));
+    System.out.println(pf.encryptTwoChars("in")); // GA
+    System.out.println(pf.encryptTwoChars("st")); // TL
+    System.out.println(pf.encryptTwoChars("nt")); // RQ
+    System.out.println(pf.decryptTwoChars("ga")); // IN
+    System.out.println(pf.decryptTwoChars("tl")); // ST
+    System.out.println(pf.decryptTwoChars("rq")); // NT
+    */
   }
 
 }
