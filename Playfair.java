@@ -2,7 +2,7 @@ import java.util.*;
 
 /**
  * @author Allison Liu
- * @version 12/28/20
+ * @version 1/7/2021
  */
 public class Playfair {
   private String keyword;
@@ -154,7 +154,14 @@ public class Playfair {
     return ("" + newC1 + newC2).toUpperCase();
   }
 
-  private String cipher(String phrase, boolean encryptThis) {
+  /**
+   * Either decrypts or encrypts a phrase in this configuration
+   * 
+   * @param phrase      The phrase to either encrypt or decrypt
+   * @param encryptThis Set to true to encrypt, false to decrypt
+   * @return
+   */
+  String cipher(String phrase, boolean encryptThis) {
     phrase = adjustInput(phrase);
     // repeatedly call encrypt
     StringBuilder sb = new StringBuilder();
@@ -168,29 +175,6 @@ public class Playfair {
 
     }
     return sb.toString();
-  }
-
-  public static void main(String[] args) {
-    Scanner sc = new Scanner(System.in);
-    System.out.println("Enter a keyword ");
-    System.out.println("> ");
-    String keyword = sc.next();
-    Playfair pf = new Playfair(keyword);
-    System.out.println("Enter a message you would like to encrypt: ");
-    String message = sc.next();
-    System.out.println("Encryption: "+ pf.cipher(message, true));
-    sc.close();
-    /*System.out.println(pf.removeDuplicates("allison"));
-    System.out.println(pf.removeDuplicates("AAAAaaaa"));
-    System.out.println(pf.adjustKeyword("JACK and Jill"));
-    System.out.println(Arrays.deepToString(pf.cipherSquare));
-    System.out.println(pf.encryptTwoChars("in")); // GA
-    System.out.println(pf.encryptTwoChars("st")); // TL
-    System.out.println(pf.encryptTwoChars("nt")); // RQ
-    System.out.println(pf.decryptTwoChars("ga")); // IN
-    System.out.println(pf.decryptTwoChars("tl")); // ST
-    System.out.println(pf.decryptTwoChars("rq")); // NT
-    */
   }
 
 }

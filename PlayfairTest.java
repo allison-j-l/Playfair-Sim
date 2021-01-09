@@ -1,22 +1,26 @@
-import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import jdk.jfr.Timestamp;
-import Playfair.java;
 
-class PlayfairTest extends Playfair {
+class PlayfairTest {
 
   Playfair pf = new Playfair("monarchy");
 
   @Test
-  void testRemoveDuplicates() {
-    assertEquals("ALISON", removeDuplicates("allison"));
-    assertEquals("A", removeDuplicates("AAAAAAAAaa"));
-  }
-
-  @Test
   void testEncryptTwoChars() {
+    assertEquals("", pf.encryptTwoChars(""));
     assertEquals("GA", pf.encryptTwoChars("in"));
     assertEquals("TL", pf.encryptTwoChars("st")); // TL
+  }
+
+  boolean encrypt = true;
+  boolean decrypt = !encrypt;
+
+  @Test
+  void testCipher() {
+    assertEquals("", pf.cipher("", true));
+    assertEquals("GATLMZCLRQTZX", pf.cipher("instruments", encrypt));
+    assertEquals("INSTRUMENTS", pf.cipher("GATLMZCLRQTZX", decrypt));
   }
 
 }
