@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * Class that controls how the user will interact with this program.
  * 
@@ -5,7 +7,7 @@
  * @version 1/8/2021
  */
 
-public class Main {
+class Main {
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
     System.out.println("Enter a keyword ");

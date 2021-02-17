@@ -2,7 +2,7 @@ import java.util.*;
 
 /**
  * @author Allison Liu
- * @version 1/7/2021
+ * @version 2/17/2021
  */
 public class Playfair {
   private String keyword;
@@ -161,7 +161,7 @@ public class Playfair {
    * @param encryptThis Set to true to encrypt, false to decrypt
    * @return
    */
-  String cipher(String phrase, boolean encryptThis) {
+  public String cipher(String phrase, boolean encryptThis) {
     phrase = adjustInput(phrase);
     // repeatedly call encrypt
     StringBuilder sb = new StringBuilder();
@@ -175,6 +175,16 @@ public class Playfair {
 
     }
     return sb.toString();
+  }
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    System.out.println("Enter your keyword: ");
+    String keyword = sc.nextLine();
+    Playfair pf = new Playfair(keyword);
+    System.out.println("Enter your message: ");
+    String m = sc.nextLine();
+    System.out.println(pf.cipher(m, true));
   }
 
 }
